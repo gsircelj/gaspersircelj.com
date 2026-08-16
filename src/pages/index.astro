@@ -1,8 +1,10 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { Image } from 'astro:assets';
+import heroPicture from '../assets/hero_picture.png';
 ---
 
 <!doctype html>
@@ -12,38 +14,241 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 	</head>
 	<body>
 		<Header />
+
 		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This template
-				serves as a lightweight, minimally-styled starting point for anyone looking to build a personal
-				website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to
-				<a href="https://docs.astro.build/">read the docs</a>
-				or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>
-				by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
+			<!-- Hero -->
+			<section class="hero">
+				<div class="hero-text">
+					<p class="greeting">Hey, I'm</p>
+					<h1 class="name">Gašper.</h1>
+					<p class="bio">A Computer Science engineer who stepped away from code to help bring safer, breakthrough medicines to the world. In my free time, I cycle continents and explore the secrets of why we're here.</p>
+				</div>
+				<div class="hero-image">
+					<Image
+						src={heroPicture}
+						alt="Gašper Jamnik"
+						width={3448}
+						height={2940}
+						class="portrait"
+						loading="eager"
+					/>
+				</div>
+			</section>
+			<!-- About -->
+			<section class="about">
+				<div class="about-content">
+					<p>I started my career writing code. From the start I knew I wouldn't be writing software forever, but I did know that I wanted to help people's lives using it. I studied Computer Science, spent time building and integrating software professionally, and only moved into a consulting role once that foundation felt solid.</p>
+
+					<p>Today I work at Metronik as a consultant, working with pharmaceutical manufacturers across Europe. The facilities I work with produce some of the most advanced drugs in the world, aseptic biologics, breakthrough therapies, medicines that reach patients who have no other options. I help them run those facilities smarter, so that what comes out the other end is safer, more reliable, and made exactly right.</p>
+
+					<p>At 25, before any of that settled into routine, I got on a bicycle in Slovenia and didn't stop pedalling until I reached Singapore. Sixteen thousand kilometres, roughly 440 days, mostly alone. I did it as an ordination of sorts, a test of what I was actually made of when there was no one around to help and no easy way back. I came back a different person, ready to tackle whatever comes next.</p>
+
+					<p>This site is where I write about what I'm thinking or studying. Pharma, history, psychology, astronomy, the things I can't stop returning to. Feel free to roam around, contact me if you want to share something. I'm always in search of curious minds.</p>
+				</div>
+			</section>
+
+			<!-- Journey -->
+			<section class="journey">
+				<div class="journey-photo">
+					<img src="/journey_hero.jpg" alt="Cycling through Central Asia" class="journey-img" />
+				</div>
+				<div class="journey-stats">
+					<div class="stat">
+						<span class="stat-number">16,000 km</span>
+						<span class="stat-label">Distance</span>
+					</div>
+					<div class="stat">
+						<span class="stat-number">440 days</span>
+						<span class="stat-label">On the road</span>
+					</div>
+					<div class="stat">
+						<span class="stat-number">20+ countries</span>
+						<span class="stat-label">Crossed</span>
+					</div>
+				</div>
+				<div class="journey-excerpt">
+					<p>Slovenia to Singapore on a bicycle. Sixteen thousand kilometres, mostly alone, through places that don't show up on travel itineraries. The kind of trip you do once and spend the rest of your life making sense of.</p>
+				</div>
+			</section>
 		</main>
+
 		<Footer />
 	</body>
 </html>
+
+<style>
+	body {
+		margin: 0;
+		padding: 0;
+		background: linear-gradient(to bottom left, #B1EEFF 0%, #F8F9FA 55%);
+		background-attachment: fixed;
+	}
+
+	main {
+		width: 100%;
+		max-width: 100%;
+		padding: 0;
+		margin: 0;
+	}
+
+	.hero {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		height: calc(100vh - 64px);
+		margin-top: 64px;
+		overflow: hidden;
+		background: transparent;
+		position: relative;
+	}
+
+	.hero-text {
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: flex-end;
+		padding: calc(100vh / 3 - 64px) 2rem 2rem 1rem;
+		text-align: right;
+	}
+
+	.greeting {
+		font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+		color: rgb(var(--black));
+		margin: 0 0 0.15em 0;
+		font-weight: 400;
+		line-height: 1.2;
+	}
+
+	.name {
+		font-size: clamp(3rem, 7vw, 6rem);
+		font-weight: 700;
+		color: rgb(var(--black));
+		margin: 0;
+		line-height: 1;
+		letter-spacing: -0.03em;
+	}
+
+	.hero-image {
+		display: flex;
+		align-items: flex-end;
+		justify-content: center;
+		height: 100%;
+		overflow: hidden;
+	}
+
+	.portrait {
+		height: 100%;
+		width: auto;
+		max-width: 100%;
+		display: block;
+		object-fit: contain;
+		object-position: bottom center;
+	}
+
+	.bio {
+		font-family: 'Inter', sans-serif;
+		font-size: clamp(1rem, 1.6vw, 1.2rem);
+		font-weight: 400;
+		line-height: 1.7;
+		color: rgb(var(--gray-dark));
+		margin-top: 1.25rem;
+		max-width: 580px;
+		text-align: right;
+	}
+
+	/* Journey section */
+	.journey {
+		background: var(--bg);
+	}
+
+	.journey-photo {
+		width: 100%;
+	}
+
+	.journey-img {
+		width: 100%;
+		height: auto;
+		display: block;
+	}
+
+	.journey-stats {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		max-width: 640px;
+		margin: 0 auto;
+		padding: 48px 2rem 32px;
+		gap: 2rem;
+	}
+
+	.stat {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+
+	.stat-number {
+		font-family: 'Inter', sans-serif;
+		font-size: clamp(1.3rem, 2.5vw, 1.75rem);
+		font-weight: 700;
+		color: rgb(var(--black));
+		letter-spacing: -0.02em;
+	}
+
+	.stat-label {
+		font-family: 'Inter', sans-serif;
+		font-size: 0.875rem;
+		color: rgb(var(--gray));
+		font-weight: 400;
+	}
+
+	.journey-excerpt {
+		max-width: 640px;
+		margin: 0 auto;
+		padding: 0 2rem 80px;
+	}
+
+	.journey-excerpt p {
+		font-family: 'Inter', sans-serif;
+		font-size: 17px;
+		line-height: 1.8;
+		color: rgb(var(--gray-dark));
+		font-style: italic;
+		margin: 0;
+	}
+
+	/* About section */
+	.about {
+		padding: 100px 2rem;
+		background: var(--bg);
+	}
+
+	.about-content {
+		max-width: 640px;
+		margin: 0 auto;
+	}
+
+	.about-content p {
+		font-family: 'Inter', sans-serif;
+		font-size: 17px;
+		line-height: 1.8;
+		color: rgb(var(--gray-dark));
+		text-align: left;
+		margin: 0 0 1.6em 0;
+	}
+
+	.about-content p:last-child {
+		margin-bottom: 0;
+	}
+
+	@media (max-width: 700px) {
+		.hero {
+			grid-template-columns: 1fr;
+			height: auto;
+		}
+		.hero-text {
+			padding: 4rem 2rem 2rem 2rem;
+		}
+		.hero-image {
+			height: 70vw;
+		}
+	}
+</style>

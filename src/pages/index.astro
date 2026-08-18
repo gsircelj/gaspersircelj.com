@@ -26,7 +26,7 @@ import heroPicture from '../assets/hero_picture.png';
 				<div class="hero-image">
 					<Image
 						src={heroPicture}
-						alt="Gašper Jamnik"
+						alt="Gašper Šircelj"
 						width={3448}
 						height={2940}
 						class="portrait"
@@ -37,37 +37,41 @@ import heroPicture from '../assets/hero_picture.png';
 			<!-- About -->
 			<section class="about">
 				<div class="about-content">
-					<p>I started my career writing code. From the start I knew I wouldn't be writing software forever, but I did know that I wanted to help people's lives using it. I studied Computer Science, spent time building and integrating software professionally, and only moved into a consulting role once that foundation felt solid.</p>
+					<p data-animate>I started my career writing code. From the start I knew I wouldn't be writing software forever, but I did know that I wanted to help people's lives using it. I studied Computer Science, spent time building and integrating software professionally, and only moved into a consulting role once that foundation felt solid.</p>
 
-					<p>Today I work at Metronik as a consultant, working with pharmaceutical manufacturers across Europe. The facilities I work with produce some of the most advanced drugs in the world, aseptic biologics, breakthrough therapies, medicines that reach patients who have no other options. I help them run those facilities smarter, so that what comes out the other end is safer, more reliable, and made exactly right.</p>
+					<p data-animate>Today I work at Metronik as a consultant, working with pharmaceutical manufacturers across Europe. The facilities I work with produce some of the most advanced drugs in the world, aseptic biologics, breakthrough therapies, medicines that reach patients who have no other options. I help them run those facilities smarter and more compliant, so that what is manufactured is safer, more reliable, and made exactly right.</p>
 
-					<p>At 25, before any of that settled into routine, I got on a bicycle in Slovenia and didn't stop pedalling until I reached Singapore. Sixteen thousand kilometres, roughly 440 days, mostly alone. I did it as an ordination of sorts, a test of what I was actually made of when there was no one around to help and no easy way back. I came back a different person, ready to tackle whatever comes next.</p>
+					<p data-animate>At 25, before life had given me real responsibilities, I got on my bicycle in Slovenia and didn't stop pedalling until I reached Singapore. That took sixteen thousand kilometres, roughly 440 days, mostly alone. I had done it as a test to myself, to see how I react in lands that are foreign, in situations where I'm completely dependent on myself. It's incredible to see how much a person can change under such conditions and in such a short period of time. I came back a different person, ready to tackle whatever comes next.</p>
 
-					<p>This site is where I write about what I'm thinking or studying. Pharma, history, psychology, astronomy, the things I can't stop returning to. Feel free to roam around, contact me if you want to share something. I'm always in search of curious minds.</p>
+					<p data-animate>This site is where I write about what I'm thinking or studying. Feel free to roam around, contact me if you want to share something. I'm always in search of curious minds.</p>
 				</div>
 			</section>
 
-			<!-- Journey -->
-			<section class="journey">
-				<div class="journey-photo">
-					<img src="/journey_hero.jpg" alt="Cycling through Central Asia" class="journey-img" />
+			<!-- Recent Posts -->
+			<section class="recent-posts">
+				<div class="recent-posts-header">
+					<h2 class="section-title">Recent writing</h2>
+					<a href="/blog" class="see-all">See all →</a>
 				</div>
-				<div class="journey-stats">
-					<div class="stat">
-						<span class="stat-number">16,000 km</span>
-						<span class="stat-label">Distance</span>
-					</div>
-					<div class="stat">
-						<span class="stat-number">440 days</span>
-						<span class="stat-label">On the road</span>
-					</div>
-					<div class="stat">
-						<span class="stat-number">20+ countries</span>
-						<span class="stat-label">Crossed</span>
-					</div>
-				</div>
-				<div class="journey-excerpt">
-					<p>Slovenia to Singapore on a bicycle. Sixteen thousand kilometres, mostly alone, through places that don't show up on travel itineraries. The kind of trip you do once and spend the rest of your life making sense of.</p>
+				<div class="posts-grid">
+					<a href="/blog/placeholder-1" class="post-card" data-animate data-delay="0">
+						<span class="post-tag">Pharma</span>
+						<h3 class="post-title">How aseptic manufacturing actually works</h3>
+						<p class="post-excerpt">A look inside the cleanrooms where biologics are made, and why the margin for error is effectively zero.</p>
+						<span class="post-date">August 2025</span>
+					</a>
+					<a href="/blog/placeholder-2" class="post-card" data-animate data-delay="150">
+						<span class="post-tag">Cycling</span>
+						<h3 class="post-title">What 440 days on a bicycle taught me about discomfort</h3>
+						<p class="post-excerpt">Somewhere in Central Asia I stopped dreading hard days. Here's what changed.</p>
+						<span class="post-date">July 2025</span>
+					</a>
+					<a href="/blog/placeholder-3" class="post-card" data-animate data-delay="300">
+						<span class="post-tag">Psychology</span>
+						<h3 class="post-title">Why smart people stay in the wrong rooms</h3>
+						<p class="post-excerpt">On the pull of familiarity, sunk cost thinking, and why changing direction takes more than a decision.</p>
+						<span class="post-date">June 2025</span>
+					</a>
 				</div>
 			</section>
 		</main>
@@ -77,11 +81,24 @@ import heroPicture from '../assets/hero_picture.png';
 </html>
 
 <style>
+	@keyframes fadeUp {
+		from { opacity: 0; transform: translateY(24px); }
+		to   { opacity: 1; transform: translateY(0); }
+	}
+
+	@keyframes fadeIn {
+		from { opacity: 0; }
+		to   { opacity: 1; }
+	}
+
 	body {
 		margin: 0;
 		padding: 0;
-		background: linear-gradient(to bottom left, #B1EEFF 0%, #F8F9FA 55%);
-		background-attachment: fixed;
+		background:
+			radial-gradient(ellipse 100vw 160vh at top right, #B1EEFF 0%, transparent 65%),
+			radial-gradient(ellipse 150vw 110vh at bottom left, #B1EEFF 0%, transparent 65%),
+			#F8F9FA;
+		animation: fadeIn 0.8s ease both;
 	}
 
 	main {
@@ -116,6 +133,7 @@ import heroPicture from '../assets/hero_picture.png';
 		margin: 0 0 0.15em 0;
 		font-weight: 400;
 		line-height: 1.2;
+		animation: fadeUp 0.9s ease 1.0s both;
 	}
 
 	.name {
@@ -125,6 +143,7 @@ import heroPicture from '../assets/hero_picture.png';
 		margin: 0;
 		line-height: 1;
 		letter-spacing: -0.03em;
+		animation: fadeUp 0.9s ease 1.2s both;
 	}
 
 	.hero-image {
@@ -142,6 +161,7 @@ import heroPicture from '../assets/hero_picture.png';
 		display: block;
 		object-fit: contain;
 		object-position: bottom center;
+		animation: fadeUp 1.2s ease 0.1s both;
 	}
 
 	.bio {
@@ -153,66 +173,106 @@ import heroPicture from '../assets/hero_picture.png';
 		margin-top: 1.25rem;
 		max-width: 580px;
 		text-align: right;
+		animation: fadeUp 0.9s ease 2.0s both;
 	}
 
-	/* Journey section */
-	.journey {
-		background: var(--bg);
+	/* Recent posts section */
+	.recent-posts {
+		padding: 80px 2rem 100px;
+		max-width: 960px;
+		margin: 0 auto;
 	}
 
-	.journey-photo {
-		width: 100%;
+	.recent-posts-header {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		margin-bottom: 2.5rem;
 	}
 
-	.journey-img {
-		width: 100%;
-		height: auto;
-		display: block;
+	.section-title {
+		font-family: 'Inter', sans-serif;
+		font-size: 1rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: rgb(var(--gray));
+		margin: 0;
 	}
 
-	.journey-stats {
+	.see-all {
+		font-family: 'Inter', sans-serif;
+		font-size: 0.9rem;
+		color: rgb(var(--gray));
+		text-decoration: none;
+		transition: color 0.15s;
+	}
+
+	.see-all:hover {
+		color: rgb(var(--black));
+	}
+
+	.posts-grid {
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
-		max-width: 640px;
-		margin: 0 auto;
-		padding: 48px 2rem 32px;
-		gap: 2rem;
+		gap: 1.5rem;
 	}
 
-	.stat {
+	.post-card {
 		display: flex;
 		flex-direction: column;
-		gap: 4px;
+		gap: 0.75rem;
+		padding: 1.75rem;
+		background: rgba(255, 255, 255, 0.6);
+		border: 1px solid rgba(0, 0, 0, 0.07);
+		border-radius: 12px;
+		text-decoration: none;
+		transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
 	}
 
-	.stat-number {
+	.post-card:hover {
+		background: rgba(255, 255, 255, 0.9);
+		transform: translateY(-3px);
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+	}
+
+	.post-tag {
 		font-family: 'Inter', sans-serif;
-		font-size: clamp(1.3rem, 2.5vw, 1.75rem);
-		font-weight: 700;
-		color: rgb(var(--black));
-		letter-spacing: -0.02em;
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--accent);
 	}
 
-	.stat-label {
+	.post-title {
+		font-family: 'Inter', sans-serif;
+		font-size: 1rem;
+		font-weight: 600;
+		line-height: 1.4;
+		color: rgb(var(--black));
+		margin: 0;
+	}
+
+	.post-excerpt {
 		font-family: 'Inter', sans-serif;
 		font-size: 0.875rem;
+		line-height: 1.65;
 		color: rgb(var(--gray));
-		font-weight: 400;
-	}
-
-	.journey-excerpt {
-		max-width: 640px;
-		margin: 0 auto;
-		padding: 0 2rem 80px;
-	}
-
-	.journey-excerpt p {
-		font-family: 'Inter', sans-serif;
-		font-size: 17px;
-		line-height: 1.8;
-		color: rgb(var(--gray-dark));
-		font-style: italic;
 		margin: 0;
+		flex: 1;
+	}
+
+	.post-date {
+		font-family: 'Inter', sans-serif;
+		font-size: 0.8rem;
+		color: rgb(var(--gray));
+	}
+
+	@media (max-width: 768px) {
+		.posts-grid {
+			grid-template-columns: 1fr;
+		}
 	}
 
 	/* About section */
@@ -239,6 +299,18 @@ import heroPicture from '../assets/hero_picture.png';
 		margin-bottom: 0;
 	}
 
+	/* Scroll animations */
+	[data-animate] {
+		opacity: 0;
+		transform: translateY(20px);
+		transition: opacity 0.7s ease, transform 0.7s ease;
+	}
+
+	[data-animate].is-visible {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
 	@media (max-width: 700px) {
 		.hero {
 			grid-template-columns: 1fr;
@@ -252,3 +324,19 @@ import heroPicture from '../assets/hero_picture.png';
 		}
 	}
 </style>
+
+<script>
+	const observer = new IntersectionObserver((entries) => {
+		entries.forEach(entry => {
+			if (entry.isIntersecting) {
+				const delay = parseInt(entry.target.getAttribute('data-delay') || '0');
+				setTimeout(() => {
+					entry.target.classList.add('is-visible');
+				}, delay);
+				observer.unobserve(entry.target);
+			}
+		});
+	}, { threshold: 0.15 });
+
+	document.querySelectorAll('[data-animate]').forEach(el => observer.observe(el));
+</script>

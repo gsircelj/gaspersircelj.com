@@ -58,6 +58,14 @@ import HeaderLink from './HeaderLink.astro';
 		color: rgb(var(--black));
 		border-bottom-color: var(--accent);
 	}
+
+	@media (max-width: 500px) {
+		header { padding: 0 0.75rem; }
+		nav { justify-content: center; overflow-x: auto; scrollbar-width: none; }
+		nav::-webkit-scrollbar { display: none; }
+		.nav-links { gap: 0; flex-wrap: nowrap; }
+		.nav-links a { padding: 0.5em 0.5em; font-size: 0.82rem; white-space: nowrap; }
+	}
 </style>
 
 <script>

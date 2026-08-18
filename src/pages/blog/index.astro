@@ -51,7 +51,7 @@ function formatDate(date: Date) {
 
 			<!-- Featured post -->
 			{featured && (
-				<section class="featured" data-tags={JSON.stringify(featured.data.tags ?? [])}>
+				<section class="featured pre-reveal" data-tags={JSON.stringify(featured.data.tags ?? [])}>
 					<a href={`/blog/${featured.id}/`} class="featured-card">
 						<div class="featured-meta">
 							{(featured.data.tags ?? []).map(tag => (
@@ -69,7 +69,7 @@ function formatDate(date: Date) {
 			<!-- Post list (all posts — first is hidden on "All" since it shows as featured) -->
 			<section class="post-list">
 				{posts.map((post, i) => (
-					<article class="post-row" data-tags={JSON.stringify(post.data.tags ?? [])} data-index={i}>
+					<article class="post-row pre-reveal" data-tags={JSON.stringify(post.data.tags ?? [])} data-index={i}>
 						<a href={`/blog/${post.id}/`} class="post-row-link">
 							<div class="post-row-meta">
 								{(post.data.tags ?? []).map(tag => (
@@ -276,6 +276,11 @@ function formatDate(date: Date) {
 
 	.post-row {
 		border-top: 1px solid rgba(0,0,0,0.07);
+		transition: border-color 0.25s ease;
+	}
+
+	.post-row:hover {
+		border-top-color: transparent;
 	}
 
 	.post-row:last-child {
@@ -284,14 +289,16 @@ function formatDate(date: Date) {
 
 	.post-row-link {
 		display: block;
-		padding: 1.75rem 0;
+		padding: 1.75rem 1.25rem;
+		margin: 0 -1.25rem;
+		border-radius: 12px;
 		text-decoration: none;
-		transition: transform 0.25s ease;
+		transition: transform 0.25s ease, box-shadow 0.25s ease;
 	}
 
 	.post-row-link:hover {
 		transform: translateY(-4px);
-		background: rgba(0, 0, 0, 0.02);
+		box-shadow: 0 10px 28px rgba(0, 0, 0, 0.09);
 	}
 
 	.post-row-meta {
@@ -335,6 +342,29 @@ function formatDate(date: Date) {
 		color: rgb(var(--gray));
 	}
 
+	/* Reveal-on-scroll */
+	.featured,
+	.post-row {
+		transition: opacity 0.28s ease, transform 0.28s ease, border-color 0.25s ease;
+	}
+
+	.featured.pre-reveal,
+	.post-row.pre-reveal {
+		opacity: 0;
+		transform: translateY(12px);
+	}
+
+	/* Filter reveal — staggered pop-in when a tag is selected */
+	@keyframes postIn {
+		from { opacity: 0; transform: translateY(12px); }
+		to   { opacity: 1; transform: none; }
+	}
+
+	.featured.reveal,
+	.post-row.reveal {
+		animation: postIn 0.36s ease both;
+	}
+
 	/* Hidden state for filtering */
 	.featured.hidden,
 	.post-row.hidden {
@@ -347,6 +377,7 @@ function formatDate(date: Date) {
 		.featured { padding: 0 1rem 32px; }
 		.post-list { padding: 0 1rem 80px; }
 		.featured-card { padding: 1.5rem; }
+		.post-row-link { padding: 1.5rem 0.75rem; margin: 0 -0.75rem; }
 	}
 </style>
 
@@ -359,6 +390,24 @@ function formatDate(date: Date) {
 
 	function getTagsFromEl(el: HTMLElement): string[] {
 		try { return JSON.parse(el.dataset.tags || '[]'); } catch { return []; }
+	}
+
+	// Filtering: hide instantly, reveal with a short staggered pop-in.
+	// 'pre-reveal' is dropped so a post that was never scrolled into view
+	// is not left transparent.
+	const STAGGER_MS = 55;
+	const MAX_STAGGER_STEPS = 8;
+
+	function hideNow(el: HTMLElement) {
+		el.classList.add('hidden');
+		el.classList.remove('reveal');
+	}
+
+	function revealAt(el: HTMLElement, position: number) {
+		el.classList.remove('hidden', 'pre-reveal', 'reveal');
+		void el.offsetWidth; // restart the animation if it is already running
+		el.style.animationDelay = `${Math.min(position, MAX_STAGGER_STEPS) * STAGGER_MS}ms`;
+		el.classList.add('reveal');
 	}
 
 	function scrollTagIntoView(btn: HTMLButtonElement) {
@@ -399,20 +448,19 @@ function formatDate(date: Date) {
 			const selected = btn.dataset.tag;
 			const isAll = selected === 'all';
 
+			let position = 0;
+
 			if (featured) {
-				featured.classList.toggle('hidden', !isAll);
+				isAll ? revealAt(featured, position++) : hideNow(featured);
 			}
 
 			rows.forEach(row => {
 				const index = parseInt(row.dataset.index || '0');
 				const tags = getTagsFromEl(row);
-				if (isAll) {
-					// on All: hide the first post (shown as featured card), show the rest
-					row.classList.toggle('hidden', index === 0);
-				} else {
-					// on a tag: show all matching posts including the first
-					row.classList.toggle('hidden', !tags.includes(selected!));
-				}
+				const shouldShow = isAll
+					? index !== 0 // on All: hide the first post (shown as featured card)
+					: tags.includes(selected!);
+				shouldShow ? revealAt(row, position++) : hideNow(row);
 			});
 		});
 	});
@@ -423,6 +471,19 @@ function formatDate(date: Date) {
 			row.classList.add('hidden');
 		}
 	});
+
+	// Scroll-in animation
+	const observer = new IntersectionObserver((entries) => {
+		entries.forEach(entry => {
+			if (entry.isIntersecting) {
+				entry.target.classList.remove('pre-reveal');
+				observer.unobserve(entry.target);
+			}
+		});
+	}, { threshold: 0.1 });
+
+	if (featured) observer.observe(featured);
+	rows.forEach(row => observer.observe(row));
 
 	// Drag-to-scroll and arrow
 	const filterInner = document.querySelector<HTMLElement>('.filter-inner');

@@ -43,7 +43,7 @@ import heroPicture from '../assets/hero_picture.png';
 
 					<p data-animate>At 25, before life had given me real responsibilities, I got on my bicycle in Slovenia and didn't stop pedalling until I reached Singapore. That took sixteen thousand kilometres, roughly 440 days, mostly alone. I had done it as a test to myself, to see how I react in lands that are foreign, in situations where I'm completely dependent on myself. It's incredible to see how much a person can change under such conditions and in such a short period of time. I came back a different person, ready to tackle whatever comes next.</p>
 
-					<p data-animate>This site is where I write about what I'm thinking or studying. Feel free to roam around, contact me if you want to share something. I'm always in search of curious minds.</p>
+					<p data-animate>This site is where I write about what I'm thinking or studying. Feel free to roam around, <a href="mailto:gasper@gaspersircelj.com" class="contact-link">contact me</a> if you want to share something. I'm always in search of curious minds.</p>
 				</div>
 			</section>
 
@@ -232,7 +232,7 @@ import heroPicture from '../assets/hero_picture.png';
 
 	.post-card:hover {
 		background: rgba(255, 255, 255, 0.9);
-		transform: translateY(-3px);
+		transform: translateY(-4px);
 		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
 	}
 
@@ -299,6 +299,17 @@ import heroPicture from '../assets/hero_picture.png';
 		margin-bottom: 0;
 	}
 
+	.contact-link {
+		color: var(--accent);
+		text-decoration: none;
+		border-bottom: 1px solid currentColor;
+		transition: opacity 0.15s;
+	}
+
+	.contact-link:hover {
+		opacity: 0.75;
+	}
+
 	/* Scroll animations */
 	[data-animate] {
 		opacity: 0;
@@ -332,6 +343,12 @@ import heroPicture from '../assets/hero_picture.png';
 				const delay = parseInt(entry.target.getAttribute('data-delay') || '0');
 				setTimeout(() => {
 					entry.target.classList.add('is-visible');
+					// once the entrance animation finishes, drop the animation styles
+					// so they stop overriding hover effects (e.g. the post-card lift)
+					setTimeout(() => {
+						entry.target.removeAttribute('data-animate');
+						entry.target.classList.remove('is-visible');
+					}, 750);
 				}, delay);
 				observer.unobserve(entry.target);
 			}

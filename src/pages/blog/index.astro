@@ -1,114 +1,478 @@
 ---
-import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
-import FormattedDate from '../../components/FormattedDate.astro';
 import Header from '../../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
 
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
+
+const featured = posts[0];
+const rest = posts.slice(1);
+
+const allTags = [...new Set(posts.flatMap(p => p.data.tags ?? []))].sort();
+
+function formatDate(date: Date) {
+	return date.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+}
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<style>
-			main {
-				width: 960px;
-			}
-			ul {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 2rem;
-				list-style-type: none;
-				margin: 0;
-				padding: 0;
-			}
-			ul li {
-				width: calc(50% - 1rem);
-			}
-			ul li * {
-				text-decoration: none;
-				transition: 0.2s ease;
-			}
-			ul li:first-child {
-				width: 100%;
-				margin-bottom: 1rem;
-				text-align: center;
-			}
-			ul li:first-child img {
-				width: 100%;
-			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
-			}
-			ul li img {
-				margin-bottom: 0.5rem;
-				border-radius: 12px;
-			}
-			ul li a {
-				display: block;
-			}
-			.title {
-				margin: 0;
-				color: rgb(var(--black));
-				line-height: 1;
-			}
-			.date {
-				margin: 0;
-				color: rgb(var(--gray));
-			}
-			ul li a:hover h4,
-			ul li a:hover .date {
-				color: rgb(var(--accent));
-			}
-			ul a:hover img {
-				box-shadow: var(--box-shadow);
-			}
-			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
-				}
-				ul li {
-					width: 100%;
-					text-align: center;
-				}
-				ul li:first-child {
-					margin-bottom: 0;
-				}
-				ul li:first-child .title {
-					font-size: 1.563em;
-				}
-			}
-		</style>
+		<BaseHead title="Writing — Gašper Šircelj" description="Thoughts on pharma, cycling, psychology, and everything in between." />
 	</head>
 	<body>
 		<Header />
+
 		<main>
-			<section>
-				<ul>
-					{
-						posts.map((post) => (
-							<li>
-								<a href={`/blog/${post.id}/`}>
-									{post.data.heroImage && (
-										<Image width={720} height={360} src={post.data.heroImage} alt="" />
-									)}
-									<h4 class="title">{post.data.title}</h4>
-									<p class="date">
-										<FormattedDate date={post.data.pubDate} />
-									</p>
-								</a>
-							</li>
-						))
-					}
-				</ul>
+			<!-- Tag filters -->
+			<section class="filters">
+				<div class="filter-wrap at-start">
+					<button class="scroll-arrow" id="scrollArrowLeft" aria-label="Scroll tags left">
+						<svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+							<path d="M8.5 2L4 6.5l4.5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					</button>
+					<div class="filter-inner">
+						<button class="tag-btn active" data-tag="all">All</button>
+						{allTags.map(tag => (
+							<button class="tag-btn" data-tag={tag}>{tag}</button>
+						))}
+					</div>
+					<button class="scroll-arrow" id="scrollArrowRight" aria-label="Scroll tags right">
+						<svg width="13" height="13" viewBox="0 0 13 13" fill="none">
+							<path d="M4.5 2l4.5 4.5-4.5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+						</svg>
+					</button>
+				</div>
+			</section>
+
+			<!-- Featured post -->
+			{featured && (
+				<section class="featured" data-tags={JSON.stringify(featured.data.tags ?? [])}>
+					<a href={`/blog/${featured.id}/`} class="featured-card">
+						<div class="featured-meta">
+							{(featured.data.tags ?? []).map(tag => (
+								<span class="post-tag">{tag}</span>
+							))}
+							<span class="post-date">{formatDate(featured.data.pubDate)}</span>
+						</div>
+						<h2 class="featured-title">{featured.data.title}</h2>
+						<p class="featured-excerpt">{featured.data.description}</p>
+						<span class="read-more">Read →</span>
+					</a>
+				</section>
+			)}
+
+			<!-- Post list (all posts — first is hidden on "All" since it shows as featured) -->
+			<section class="post-list">
+				{posts.map((post, i) => (
+					<article class="post-row" data-tags={JSON.stringify(post.data.tags ?? [])} data-index={i}>
+						<a href={`/blog/${post.id}/`} class="post-row-link">
+							<div class="post-row-meta">
+								{(post.data.tags ?? []).map(tag => (
+									<span class="post-tag">{tag}</span>
+								))}
+								<span class="post-date">{formatDate(post.data.pubDate)}</span>
+							</div>
+							<h3 class="post-row-title">{post.data.title}</h3>
+							<p class="post-row-excerpt">{post.data.description}</p>
+						</a>
+					</article>
+				))}
 			</section>
 		</main>
+
 		<Footer />
 	</body>
 </html>
+
+<style is:global>
+	main { width: 100% !important; max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
+	body { display: flex; flex-direction: column; min-height: 100vh; }
+	body > main { flex: 1; }
+</style>
+<style>
+	body {
+		margin: 0;
+		padding: 0;
+		background:
+			radial-gradient(ellipse 100vw 120vh at top right, #B1EEFF 0%, transparent 65%),
+			#ffffff;
+	}
+
+	/* Filters */
+	.filters {
+		padding: 100px 2rem 28px;
+	}
+
+	.filter-wrap {
+		position: relative;
+		max-width: 760px;
+		margin: 0 auto;
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+	}
+
+	/* mask — short fade so the next/previous tag peeks visibly */
+	.filter-inner {
+		mask-image: linear-gradient(to right, black, black calc(100% - 12px), transparent);
+		-webkit-mask-image: linear-gradient(to right, black, black calc(100% - 12px), transparent);
+	}
+
+	.filter-wrap:not(.at-start) .filter-inner {
+		mask-image: linear-gradient(to right, transparent, black 12px, black calc(100% - 12px), transparent);
+		-webkit-mask-image: linear-gradient(to right, transparent, black 12px, black calc(100% - 12px), transparent);
+	}
+
+	.filter-wrap.at-end .filter-inner {
+		mask-image: linear-gradient(to right, transparent, black 12px, black);
+		-webkit-mask-image: linear-gradient(to right, transparent, black 12px, black);
+	}
+
+	.filter-wrap.at-start.at-end .filter-inner {
+		mask-image: none;
+		-webkit-mask-image: none;
+	}
+
+	.filter-inner {
+		flex: 1;
+		min-width: 0;
+		display: flex;
+		flex-wrap: nowrap;
+		gap: 0.4rem;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+		scrollbar-width: none;
+		padding-bottom: 2px;
+		cursor: grab;
+	}
+
+	.filter-inner.is-dragging {
+		cursor: grabbing;
+	}
+
+	.filter-inner::-webkit-scrollbar {
+		display: none;
+	}
+
+	.tag-btn {
+		font-family: 'Inter', sans-serif;
+		font-size: 0.8rem;
+		font-weight: 500;
+		padding: 0.2em 0.7em;
+		border-radius: 999px;
+		border: 1px solid rgba(0,0,0,0.12);
+		background: #ffffff;
+		color: rgb(var(--gray));
+		cursor: pointer;
+		transition: all 0.15s;
+		white-space: nowrap;
+		flex-shrink: 0;
+	}
+
+	.tag-btn:hover {
+		border-color: var(--accent);
+		color: var(--accent);
+	}
+
+	.tag-btn.active {
+		background: var(--accent);
+		border-color: var(--accent);
+		color: white;
+	}
+
+	.scroll-arrow {
+		flex-shrink: 0;
+		width: 26px;
+		height: 26px;
+		border-radius: 50%;
+		border: 1px solid rgba(0,0,0,0.1);
+		background: #ffffff;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		color: rgb(var(--gray));
+		transition: opacity 0.2s, box-shadow 0.15s;
+		padding: 0;
+	}
+
+	.scroll-arrow:hover {
+		box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+	}
+
+	.filter-wrap.at-start #scrollArrowLeft,
+	.filter-wrap.at-end #scrollArrowRight {
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	/* Featured post */
+	.featured {
+		max-width: 760px;
+		margin: 0 auto;
+		padding: 0 2rem 48px;
+	}
+
+	.featured-card {
+		display: block;
+		padding: 2.5rem;
+		background: rgba(255,255,255,0.7);
+		border: 1px solid rgba(0,0,0,0.07);
+		border-radius: 16px;
+		text-decoration: none;
+		transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+	}
+
+	.featured-card:hover {
+		background: rgba(255,255,255,0.95);
+		transform: translateY(-2px);
+		box-shadow: 0 8px 32px rgba(0,0,0,0.07);
+	}
+
+	.featured-meta {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-bottom: 1rem;
+	}
+
+	.featured-title {
+		font-family: 'Inter', sans-serif;
+		font-size: clamp(1.4rem, 3vw, 2rem);
+		font-weight: 700;
+		letter-spacing: -0.02em;
+		color: rgb(var(--black));
+		margin: 0 0 0.75rem 0;
+		line-height: 1.25;
+	}
+
+	.featured-excerpt {
+		font-family: 'Inter', sans-serif;
+		font-size: 1rem;
+		line-height: 1.7;
+		color: rgb(var(--gray));
+		margin: 0 0 1.5rem 0;
+	}
+
+	.read-more {
+		font-family: 'Inter', sans-serif;
+		font-size: 0.9rem;
+		color: var(--accent);
+		font-weight: 500;
+	}
+
+	/* Post list */
+	.post-list {
+		max-width: 760px;
+		margin: 0 auto;
+		padding: 0 2rem 100px;
+	}
+
+	.post-row {
+		border-top: 1px solid rgba(0,0,0,0.07);
+	}
+
+	.post-row:last-child {
+		border-bottom: 1px solid rgba(0,0,0,0.07);
+	}
+
+	.post-row-link {
+		display: block;
+		padding: 1.75rem 0;
+		text-decoration: none;
+		transition: opacity 0.15s;
+	}
+
+	.post-row-link:hover {
+		opacity: 0.7;
+	}
+
+	.post-row-meta {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.post-row-title {
+		font-family: 'Inter', sans-serif;
+		font-size: 1.15rem;
+		font-weight: 600;
+		letter-spacing: -0.01em;
+		color: rgb(var(--black));
+		margin: 0 0 0.4rem 0;
+		line-height: 1.3;
+	}
+
+	.post-row-excerpt {
+		font-family: 'Inter', sans-serif;
+		font-size: 0.9rem;
+		line-height: 1.6;
+		color: rgb(var(--gray));
+		margin: 0;
+	}
+
+	/* Shared tag + date */
+	.post-tag {
+		font-family: 'Inter', sans-serif;
+		font-size: 0.72rem;
+		font-weight: 600;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--accent);
+	}
+
+	.post-date {
+		font-family: 'Inter', sans-serif;
+		font-size: 0.8rem;
+		color: rgb(var(--gray));
+	}
+
+	/* Hidden state for filtering */
+	.featured.hidden,
+	.post-row.hidden {
+		display: none;
+	}
+
+	@media (max-width: 700px) {
+		.blog-hero { padding: 120px 1.5rem 40px; }
+		.filters { padding: 0 1.5rem 36px; }
+		.featured { padding: 0 1.5rem 36px; }
+		.post-list { padding: 0 1.5rem 80px; }
+		.featured-card { padding: 1.75rem; }
+	}
+</style>
+
+<script>
+	const buttons = document.querySelectorAll<HTMLButtonElement>('.tag-btn');
+	const featured = document.querySelector<HTMLElement>('.featured');
+	const rows = document.querySelectorAll<HTMLElement>('.post-row');
+
+	let hasDragged = false;
+
+	function getTagsFromEl(el: HTMLElement): string[] {
+		try { return JSON.parse(el.dataset.tags || '[]'); } catch { return []; }
+	}
+
+	function scrollTagIntoView(btn: HTMLButtonElement) {
+		const filterInnerEl = document.querySelector<HTMLElement>('.filter-inner');
+		if (!filterInnerEl) return;
+		const containerRect = filterInnerEl.getBoundingClientRect();
+		const btnRect = btn.getBoundingClientRect();
+		const PEEK = 32;
+
+		if (btnRect.right > containerRect.right) {
+			// Scrolling right: show clicked tag fully + next sibling peeking
+			const next = btn.nextElementSibling as HTMLElement | null;
+			if (next) {
+				const nextRect = next.getBoundingClientRect();
+				filterInnerEl.scrollBy({ left: nextRect.left + PEEK - containerRect.right, behavior: 'smooth' });
+			} else {
+				filterInnerEl.scrollBy({ left: btnRect.right - containerRect.right + 12, behavior: 'smooth' });
+			}
+		} else if (btnRect.left < containerRect.left) {
+			// Scrolling left: show clicked tag fully + previous sibling peeking
+			const prev = btn.previousElementSibling as HTMLElement | null;
+			if (prev) {
+				const prevRect = prev.getBoundingClientRect();
+				filterInnerEl.scrollBy({ left: prevRect.right - PEEK - containerRect.left, behavior: 'smooth' });
+			} else {
+				filterInnerEl.scrollBy({ left: btnRect.left - containerRect.left - 12, behavior: 'smooth' });
+			}
+		}
+	}
+
+	buttons.forEach(btn => {
+		btn.addEventListener('click', () => {
+			if (hasDragged) { hasDragged = false; return; }
+			buttons.forEach(b => b.classList.remove('active'));
+			btn.classList.add('active');
+			scrollTagIntoView(btn);
+
+			const selected = btn.dataset.tag;
+			const isAll = selected === 'all';
+
+			if (featured) {
+				featured.classList.toggle('hidden', !isAll);
+			}
+
+			rows.forEach(row => {
+				const index = parseInt(row.dataset.index || '0');
+				const tags = getTagsFromEl(row);
+				if (isAll) {
+					// on All: hide the first post (shown as featured card), show the rest
+					row.classList.toggle('hidden', index === 0);
+				} else {
+					// on a tag: show all matching posts including the first
+					row.classList.toggle('hidden', !tags.includes(selected!));
+				}
+			});
+		});
+	});
+
+	// initialise: hide the first post-row on page load (it's shown as featured)
+	rows.forEach(row => {
+		if (parseInt(row.dataset.index || '0') === 0) {
+			row.classList.add('hidden');
+		}
+	});
+
+	// Drag-to-scroll and arrow
+	const filterInner = document.querySelector<HTMLElement>('.filter-inner');
+	const filterWrap = document.querySelector<HTMLElement>('.filter-wrap');
+
+	if (filterInner && filterWrap) {
+		let isDown = false;
+		let startX = 0;
+		let startPageX = 0;
+		let scrollLeft = 0;
+		const DRAG_THRESHOLD = 5;
+
+		filterInner.addEventListener('mousedown', (e) => {
+			isDown = true;
+			hasDragged = false;
+			filterInner.classList.add('is-dragging');
+			startX = e.pageX - filterInner.offsetLeft;
+			startPageX = e.pageX;
+			scrollLeft = filterInner.scrollLeft;
+		});
+
+		document.addEventListener('mouseup', () => {
+			isDown = false;
+			filterInner.classList.remove('is-dragging');
+		});
+
+		filterInner.addEventListener('mousemove', (e) => {
+			if (!isDown) return;
+			e.preventDefault();
+			const x = e.pageX - filterInner.offsetLeft;
+			filterInner.scrollLeft = scrollLeft - (x - startX);
+			if (Math.abs(e.pageX - startPageX) > DRAG_THRESHOLD) {
+				hasDragged = true;
+			}
+		});
+
+		function updateArrows() {
+			const atStart = filterInner.scrollLeft <= 4;
+			const atEnd = filterInner.scrollLeft + filterInner.clientWidth >= filterInner.scrollWidth - 4;
+			filterWrap.classList.toggle('at-start', atStart);
+			filterWrap.classList.toggle('at-end', atEnd);
+		}
+
+		filterInner.addEventListener('scroll', updateArrows);
+		updateArrows();
+
+		document.getElementById('scrollArrowLeft')?.addEventListener('click', () => {
+			filterInner.scrollBy({ left: -160, behavior: 'smooth' });
+		});
+
+		document.getElementById('scrollArrowRight')?.addEventListener('click', () => {
+			filterInner.scrollBy({ left: 160, behavior: 'smooth' });
+		});
+	}
+</script>

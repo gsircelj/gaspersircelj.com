@@ -23,13 +23,13 @@ import HeaderLink from './HeaderLink.astro';
 		margin: 0;
 		padding: 0 2em;
 		background: transparent;
-		transition: background 0.3s ease, box-shadow 0.3s ease;
+		transition: background 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease;
 	}
 
 	header.scrolled {
-		background: rgba(255, 255, 255, 0.25);
-		backdrop-filter: blur(16px);
-		-webkit-backdrop-filter: blur(16px);
+		background: rgba(255, 255, 255, 0.55);
+		backdrop-filter: blur(40px) saturate(180%);
+		-webkit-backdrop-filter: blur(40px) saturate(180%);
 		box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
 	}
 	nav {
@@ -81,3 +81,4 @@ import HeaderLink from './HeaderLink.astro';
 	window.addEventListener('scroll', updateHeader, { passive: true });
 	updateHeader();
 </script>
+
